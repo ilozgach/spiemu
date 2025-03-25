@@ -6,10 +6,16 @@ module tb_ulpi_ctrl_reset ();
     logic i_nxt = 0;
     logic o_stp;
     logic o_rst;
-    wire [7:0] io_data;
+    wire [7:0] data_rx;
+    wire [7:0] data_tx;
 
-    ulpi_ctrl ulpi_controller(.i_rst(i_rst), .i_clk(i_clk), .i_dir(i_dir), .i_nxt(i_nxt), .o_stp(o_stp), .o_rst(o_rst),
-                              .io_data(io_data));
+    ulpi_ctrl ulpi_controller(.i_rst(i_rst),
+                              .i_clk(i_clk),
+                              .i_dir(i_dir),
+                              .i_nxt(i_nxt),
+                              .o_stp(o_stp),
+                              .i_data(data_rx),
+                              .o_data(data_tx));
 
     initial begin
         i_clk = 0;
