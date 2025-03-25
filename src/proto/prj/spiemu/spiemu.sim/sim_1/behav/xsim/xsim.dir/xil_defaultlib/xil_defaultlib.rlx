@@ -1,0 +1,8 @@
+0.7
+2020.2
+May 22 2024
+18:54:44
+/home/ilozgach/wa/spiemu/src/proto/prj/spiemu/spiemu.sim/sim_1/behav/xsim/glbl.v,1708598507,verilog,,,,glbl,,uvm,,,,,,
+/home/ilozgach/wa/spiemu/src/proto/rtl/defs.sv,1742281711,systemVerilog,/home/ilozgach/wa/spiemu/src/proto/rtl/ulpi_ctrl.sv;/home/ilozgach/wa/spiemu/src/proto/tb/ulpi_ctrl/tb_ulpi_ctrl_o_rst.sv,/home/ilozgach/wa/spiemu/src/proto/rtl/ulpi_ctrl.sv,,$unit_defs_sv_654836592,,uvm,,,,,,
+/home/ilozgach/wa/spiemu/src/proto/rtl/ulpi_ctrl.sv,1742281711,systemVerilog,,/home/ilozgach/wa/spiemu/src/proto/tb/ulpi_ctrl/tb_ulpi_ctrl_o_rst.sv,,ulpi_ctrl,,uvm,,,,,,
+/home/ilozgach/wa/spiemu/src/proto/tb/ulpi_ctrl/tb_ulpi_ctrl_o_rst.sv,1742281711,systemVerilog,,,,tb_ulpi_ctrl_reset,,uvm,,,,,,
