@@ -22,39 +22,33 @@ module tb_ulpi_ctrl_reset ();
         #1 i_rst = 1;
         #1 i_clk = 1;
         #1 if (ulpi_controller.state != ULPI_FSM_STATE_RESET) begin
-            $error("Wrong state at the beginning: actual = %s, expected = ULPI_FSM_STATE_RESET",
+            $fatal(1, "Wrong state at the beginning: actual = %s, expected = ULPI_FSM_STATE_RESET",
                    ulpi_controller.state.name());
-            $fatal();
         end
         if (o_rst != 1) begin
-            $error("Wrong o_rst signal at the beginning: actual = %d, expected = 1", o_rst);
-            $fatal();
+            $fatal(1, "Wrong o_rst signal at the beginning: actual = %d, expected = 1", o_rst);
         end
 
         #1 i_rst = 0;
         #1 i_clk = 0;
         #1 i_clk = 1;
         #1 if (ulpi_controller.state != ULPI_FSM_STATE_RESET_SET_STP_HIGH) begin
-            $error("Wrong state after reset deassertion: actual = %s, expected = ULPI_FSM_STATE_BEGIN",
+            $fatal(1, "Wrong state after reset deassertion: actual = %s, expected = ULPI_FSM_STATE_BEGIN",
                    ulpi_controller.state.name());
-            $fatal();
         end
         if (o_rst != 1) begin
-            $error("Wrong o_rst signal after reset deassertion: actual = %d, expected = 1", o_rst);
-            $fatal();
+            $fatal(1, "Wrong o_rst signal after reset deassertion: actual = %d, expected = 1", o_rst);
         end
 
         #1 i_rst = 1;
         #1 i_clk = 0;
         #1 i_clk = 1;
         #1 if (ulpi_controller.state != ULPI_FSM_STATE_RESET) begin
-            $error("Wrong state after reset assertion: actual = %s, expected = ULPI_FSM_STATE_RESET",
+            $fatal(1, "Wrong state after reset assertion: actual = %s, expected = ULPI_FSM_STATE_RESET",
                    ulpi_controller.state.name());
-            $fatal();
         end
         if (o_rst != 1) begin
-            $error("Wrong o_rst signal after reset deassertion: actual = %d, expected = 1", o_rst);
-            $fatal();
+            $fatal(1, "Wrong o_rst signal after reset deassertion: actual = %d, expected = 1", o_rst);
         end
     end
 
