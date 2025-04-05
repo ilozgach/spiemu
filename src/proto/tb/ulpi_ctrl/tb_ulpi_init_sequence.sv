@@ -4,7 +4,7 @@
 module tb_ulpi_ctrl_reset ();
 
     logic i_rst = 1;
-    logic i_clk;
+    logic i_clk = 0;
     logic i_dir = 0;
     logic i_nxt = 0;
     logic o_stp;
@@ -21,7 +21,6 @@ module tb_ulpi_ctrl_reset ();
                               .o_data(data_tx));
 
     initial begin
-        i_clk = 0;
         #1 i_rst = 1;
         #1 i_clk = 1;
         #1 if (ulpi_controller.state != ULPI_FSM_STATE_RESET) begin

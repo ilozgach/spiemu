@@ -1,3 +1,6 @@
+`include "defs.svh"
+`include "ulpi_ctrl.sv"
+
 module tb_ulpi_ctrl_reset ();
 
     logic i_rst;

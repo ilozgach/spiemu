@@ -11,7 +11,7 @@ module top (
     wire [7:0] data_rx;
     wire [7:0] data_tx;
 
-`ifdef VIVADO_DEBUG
+`ifdef SYNTHESIS
     vio_0 vio(
         .clk(ULPI_CLK),
         .probe_out0(rst)
