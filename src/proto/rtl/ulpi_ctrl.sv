@@ -106,12 +106,50 @@ module ulpi_ctrl
             ULPI_FSM_STATE_READ_STRAP: begin
                 if (i_dir == 0) begin
                     state = ULPI_FSM_STATE_REG_READ_WAIT_FOR_DIR_HIGH;
-                    next_state = ULPI_FSM_STATE_IDLE;
+                    next_state = ULPI_FSM_STATE_WRITE_FUNCTION_CONTROL;
                     tx_data[7:6] = 2'b11;
                     tx_data[5:0] = 6'h16;
                 end else begin
                     state = ULPI_FSM_STATE_DIR_HIGH_TURNAROUND;
                     next_state = ULPI_FSM_STATE_READ_STRAP;
+                end
+            end
+
+            // =========================================================================================================
+            // Configure FUNCTION and OTG control
+            // =========================================================================================================
+
+            ULPI_FSM_STATE_WRITE_FUNCTION_CONTROL: begin
+                if (i_dir == 0) begin
+                    prev_state = ULPI_FSM_STATE_WRITE_FUNCTION_CONTROL;
+                    state = ULPI_FSM_STATE_TX_CMD_BEGIN;
+                    next_state = ULPI_FSM_STATE_WRITE_OTG_CONTROL;
+                    tx_data_buffer[0] = `ULPI_TX_CMD_CODE_REG_WRITE_VALUE << `ULPI_TX_CMD_CODE_REG_WRITE_OFFSET | `ULPI_FUNCTION_CONTROL_REGISTER_ADDRESS;
+                    tx_data_buffer[1] = 8'b10 << `ULPI__FUNCTION_CONTROL__XCVR_SELECT__OFFSET |
+                                        8'b1 << `ULPI__FUNCTION_CONTROL__TERM_SELECT__OFFSET |
+                                        8'b0 << `ULPI__FUNCTION_CONTROL__OP_MODE__OFFSET |
+                                        8'b0 << `ULPI__FUNCTION_CONTROL__RESET__OFFSET |
+                                        8'b1 << `ULPI__FUNCTION_CONTROL__SUSPENDM__OFFSET;
+                    tx_data_buffer_size = 8'h02;
+                    tx_data_buffer_index = 8'h00;
+                end else begin
+                    state = ULPI_FSM_STATE_RX_CMD;
+                    next_state = ULPI_FSM_STATE_WRITE_FUNCTION_CONTROL;
+                end
+            end
+
+            ULPI_FSM_STATE_WRITE_OTG_CONTROL: begin
+                if (i_dir == 0) begin
+                    prev_state = ULPI_FSM_STATE_WRITE_OTG_CONTROL;
+                    state = ULPI_FSM_STATE_TX_CMD_BEGIN;
+                    next_state = ULPI_FSM_STATE_IDLE;
+                    tx_data_buffer[0] = `ULPI_TX_CMD_CODE_REG_WRITE_VALUE << `ULPI_TX_CMD_CODE_REG_WRITE_OFFSET | `ULPI_OTG_CONTROL_REGISTER_ADDRESS;
+                    tx_data_buffer[1] = 8'b0;
+                    tx_data_buffer_size = 8'h02;
+                    tx_data_buffer_index = 8'h00;
+                end else begin
+                    state = ULPI_FSM_STATE_RX_CMD;
+                    next_state = ULPI_FSM_STATE_WRITE_OTG_CONTROL;
                 end
             end
 
