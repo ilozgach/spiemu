@@ -2,7 +2,8 @@
 
 module ulpi_ctrl
 # (
-    parameter byte TX_BUFFER_SIZE = 2
+    parameter byte TX_BUFFER_SIZE = 2,
+    parameter byte RX_BUFFER_SIZE = 32
 )
 (
     // Custom signals
@@ -23,11 +24,15 @@ module ulpi_ctrl
     ulpi_fsm_state next_state = ULPI_FSM_STATE_RESET;
     logic stp_drive = 1'b0;
     logic rst_drive = 1'b1;
-    logic [7:0] rx_data = 8'h0;
+    // logic [7:0] rx_data = 8'h0;
     logic [7:0] tx_data = 8'h0;
     logic [7:0] tx_data_buffer [TX_BUFFER_SIZE - 1:0];
     logic [7:0] tx_data_buffer_size = 8'h0;
     logic [7:0] tx_data_buffer_index = 8'h0;
+    logic [7:0] rx_data_buffer [RX_BUFFER_SIZE - 1:0];
+    logic [7:0] rx_data_buffer_size = 8'h0;
+    // logic [7:0] rx_data_buffer_index = 8'h0;
+    logic is_rx_active = 1'b0;
 
 `ifdef SYNTHESIS
     ila_0 ila(
@@ -130,6 +135,11 @@ module ulpi_ctrl
                                         8'b0 << `ULPI__FUNCTION_CONTROL__OP_MODE__OFFSET |
                                         8'b0 << `ULPI__FUNCTION_CONTROL__RESET__OFFSET |
                                         8'b1 << `ULPI__FUNCTION_CONTROL__SUSPENDM__OFFSET;
+                    // tx_data_buffer[1] = 8'b01 << `ULPI__FUNCTION_CONTROL__XCVR_SELECT__OFFSET |
+                    //                     8'b1 << `ULPI__FUNCTION_CONTROL__TERM_SELECT__OFFSET |
+                    //                     8'b00 << `ULPI__FUNCTION_CONTROL__OP_MODE__OFFSET |
+                    //                     8'b0 << `ULPI__FUNCTION_CONTROL__RESET__OFFSET |
+                    //                     8'b1 << `ULPI__FUNCTION_CONTROL__SUSPENDM__OFFSET;
                     tx_data_buffer_size = 8'h02;
                     tx_data_buffer_index = 8'h00;
                 end else begin
@@ -170,7 +180,9 @@ module ulpi_ctrl
 
             ULPI_FSM_STATE_REG_READ_DIR_HIGH_TURNAROUND: begin
                 if (i_dir == 1) begin
-                    rx_data = i_data;
+                    // rx_data = i_data;
+                    rx_data_buffer[rx_data_buffer_size] = i_data;
+                    rx_data_buffer_size = rx_data_buffer_size + 1;
                     state = ULPI_FSM_STATE_REG_READ_WAIT_FOR_DIR_LOW;
                 end
             end
@@ -179,7 +191,9 @@ module ulpi_ctrl
                 if (i_dir == 0) begin
                     state = ULPI_FSM_STATE_REG_READ_DIR_LOW_TURNAROUND;
                 end else begin
-                    rx_data = i_data;
+                    // rx_data = i_data;
+                    rx_data_buffer[rx_data_buffer_size] = i_data;
+                    rx_data_buffer_size = rx_data_buffer_size + 1;
                 end
             end
 
@@ -196,9 +210,17 @@ module ulpi_ctrl
             ULPI_FSM_STATE_RX_CMD: begin
                 if (i_dir == 0) begin
                     state = next_state;
-                    rx_data = 8'h00;
+                    // rx_data = 8'h00;
+                    is_rx_active = 1'b0;
                 end else begin
-                    rx_data = i_data;
+                    // rx_data = i_data;
+                    if (i_nxt == 1) begin
+                        if (rx_data_buffer_size < RX_BUFFER_SIZE) begin
+                            rx_data_buffer[rx_data_buffer_size] = i_data;
+                            rx_data_buffer_size = rx_data_buffer_size + 1;
+                        end
+                    end
+                    is_rx_active = 1'b1;
                 end
             end
 
@@ -259,7 +281,7 @@ module ulpi_ctrl
 
             ULPI_FSM_STATE_IDLE: begin
                 if (i_dir == 1) begin
-                    state = ULPI_FSM_STATE_DIR_HIGH_TURNAROUND;
+                    state = ULPI_FSM_STATE_RX_CMD;
                     next_state = ULPI_FSM_STATE_IDLE;
                 end
             end
