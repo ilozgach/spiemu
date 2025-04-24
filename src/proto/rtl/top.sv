@@ -8,11 +8,13 @@ module top (
 );
 
     logic [0:0] rst;
+    logic [0:0] init;
     wire [7:0] data_rx;
     wire [7:0] data_tx;
 
     ulpi_ctrl ulpi_controller(
         .i_rst(rst),
+        .i_init(init),
         .i_clk(ULPI_CLK),
         .i_dir(ULPI_DIR),
         .i_nxt(ULPI_NXT),
@@ -58,7 +60,8 @@ module top (
         .probe_in30(ulpi_controller.rx_data_buffer[30]),
         .probe_in31(ulpi_controller.rx_data_buffer[31]),
         .probe_in32(ulpi_controller.rx_data_buffer_size),
-        .probe_out0(rst)
+        .probe_out0(rst),
+        .probe_out1(init)
     );
 `endif
 
