@@ -49,7 +49,8 @@
 module vio_0 (
 clk,
 probe_in0,probe_in1,probe_in2,probe_in3,probe_in4,probe_in5,probe_in6,probe_in7,probe_in8,probe_in9,probe_in10,probe_in11,probe_in12,probe_in13,probe_in14,probe_in15,probe_in16,probe_in17,probe_in18,probe_in19,probe_in20,probe_in21,probe_in22,probe_in23,probe_in24,probe_in25,probe_in26,probe_in27,probe_in28,probe_in29,probe_in30,probe_in31,probe_in32,
-probe_out0
+probe_out0,
+probe_out1
 );
 
 input clk;
@@ -88,6 +89,7 @@ input [7 : 0] probe_in31;
 input [7 : 0] probe_in32;
 
 output reg [0 : 0] probe_out0 = 'h1 ;
+output reg [0 : 0] probe_out1 = 'h0 ;
 
 
 endmodule
